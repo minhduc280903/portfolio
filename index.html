@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Duc Vu — Developer for Hire</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #0a0a0b;
+  --surface: #111113;
+  --surface-2: #1a1a1e;
+  --border: #2a2a2e;
+  --text: #e8e8ec;
+  --text-dim: #8a8a94;
+  --accent: #00ff88;
+  --accent-dim: #00cc6a;
+  --accent-glow: rgba(0, 255, 136, 0.15);
+  --red: #ff4757;
+  --yellow: #ffd43b;
+  --blue: #4dabf7;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* Noise texture overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.mono { font-family: 'Space Mono', monospace; }
+
+/* ==================== GRID BACKGROUND ==================== */
+.grid-bg {
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+  background-size: 60px 60px;
+  z-index: -1;
+}
+
+/* ==================== NAVIGATION ==================== */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  padding: 1.2rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  backdrop-filter: blur(20px);
+  background: rgba(10,10,11,0.8);
+  border-bottom: 1px solid var(--border);
+}
+
+nav .logo {
+  font-family: 'Space Mono', monospace;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--accent);
+}
+
+nav .nav-links {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+}
+
+nav .nav-links a {
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition: color 0.3s;
+}
+
+nav .nav-links a:hover {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+/* ==================== HERO ==================== */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 8rem 4rem 4rem;
+  position: relative;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--accent-glow);
+  border: 1px solid rgba(0,255,136,0.2);
+  padding: 0.4rem 1rem;
+  border-radius: 100px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--accent);
+  width: fit-content;
+  margin-bottom: 2rem;
+  animation: fadeSlideUp 0.8s ease-out;
+}
+
+.hero-badge .dot {
+  width: 6px;
+  height: 6px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.hero h1 {
+  font-size: clamp(3rem, 8vw, 6.5rem);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  margin-bottom: 1.5rem;
+  animation: fadeSlideUp 0.8s ease-out 0.1s both;
+}
+
+.hero h1 .accent {
+  color: var(--accent);
+  position: relative;
+}
+
+.hero h1 .accent::after {
+  content: '';
+  position: absolute;
+  bottom: 0.1em;
+  left: 0;
+  right: 0;
+  height: 0.15em;
+  background: var(--accent);
+  opacity: 0.3;
+  border-radius: 4px;
+}
+
+.hero-sub {
+  font-size: 1.25rem;
+  color: var(--text-dim);
+  max-width: 600px;
+  font-weight: 300;
+  animation: fadeSlideUp 0.8s ease-out 0.2s both;
+}
+
+.hero-cta {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2.5rem;
+  animation: fadeSlideUp 0.8s ease-out 0.3s both;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.9rem 2rem;
+  background: var(--accent);
+  color: var(--bg);
+  font-weight: 600;
+  font-size: 0.95rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-decoration: none;
+}
+
+.btn-primary:hover {
+  background: #00ffaa;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px var(--accent-glow);
+  text-decoration: none;
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.9rem 2rem;
+  background: transparent;
+  color: var(--text);
+  font-weight: 500;
+  font-size: 0.95rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.3s;
+  text-decoration: none;
+}
+
+.btn-secondary:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  text-decoration: none;
+}
+
+/* Floating terminal decoration */
+.hero-terminal {
+  position: absolute;
+  right: 4rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 420px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  animation: fadeSlideLeft 1s ease-out 0.5s both;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+
+.terminal-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0.75rem 1rem;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+}
+
+.terminal-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.terminal-dot.r { background: var(--red); }
+.terminal-dot.y { background: var(--yellow); }
+.terminal-dot.g { background: var(--accent); }
+
+.terminal-body {
+  padding: 1.2rem;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.75rem;
+  line-height: 1.8;
+  color: var(--text-dim);
+}
+
+.terminal-body .cmd { color: var(--accent); }
+.terminal-body .out { color: var(--text); }
+.terminal-body .dim { color: var(--text-dim); }
+
+.terminal-cursor {
+  display: inline-block;
+  width: 8px;
+  height: 14px;
+  background: var(--accent);
+  animation: blink 1s step-end infinite;
+  vertical-align: middle;
+  margin-left: 4px;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* ==================== SECTION COMMON ==================== */
+section {
+  padding: 6rem 4rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.section-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-bottom: 1rem;
+}
+
+.section-title {
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 1rem;
+}
+
+.section-desc {
+  color: var(--text-dim);
+  font-size: 1.1rem;
+  max-width: 600px;
+  margin-bottom: 3rem;
+}
+
+/* ==================== SERVICES ==================== */
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 1.5rem;
+}
+
+.service-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 2rem;
+  transition: all 0.4s;
+  position: relative;
+  overflow: hidden;
+}
+
+.service-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent), transparent);
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+.service-card:hover {
+  border-color: rgba(0,255,136,0.3);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+}
+
+.service-card:hover::before { opacity: 1; }
+
+.service-icon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.service-card h3 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.service-card p {
+  color: var(--text-dim);
+  font-size: 0.95rem;
+  margin-bottom: 1.2rem;
+}
+
+.service-tag {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  margin-right: 0.4rem;
+  margin-bottom: 0.4rem;
+}
+
+.service-price {
+  display: block;
+  margin-top: 1.2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  font-family: 'Space Mono', monospace;
+  font-size: 0.85rem;
+  color: var(--accent);
+}
+
+/* ==================== PROCESS ==================== */
+.process-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  counter-reset: step;
+}
+
+.process-step {
+  counter-increment: step;
+  position: relative;
+  padding-left: 1rem;
+}
+
+.process-step::before {
+  content: counter(step, decimal-leading-zero);
+  font-family: 'Space Mono', monospace;
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--surface-2);
+  position: absolute;
+  top: -0.5rem;
+  left: -0.5rem;
+  line-height: 1;
+  z-index: 0;
+}
+
+.process-step h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.process-step p {
+  color: var(--text-dim);
+  font-size: 0.9rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* ==================== PROJECTS ==================== */
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+  gap: 1.5rem;
+}
+
+.project-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.4s;
+}
+
+.project-card:hover {
+  border-color: rgba(0,255,136,0.3);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+}
+
+.project-preview {
+  height: 200px;
+  background: var(--surface-2);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.project-preview .code-preview {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  padding: 1.2rem;
+  line-height: 1.6;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.project-preview .code-preview .kw { color: var(--blue); }
+.project-preview .code-preview .fn { color: var(--accent); }
+.project-preview .code-preview .str { color: var(--yellow); }
+.project-preview .code-preview .cm { color: #555; }
+
+.project-info {
+  padding: 1.5rem;
+}
+
+.project-info h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.project-info p {
+  color: var(--text-dim);
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.project-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+/* ==================== TECH STACK ==================== */
+.stack-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.stack-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.stack-item:hover {
+  border-color: var(--accent);
+  background: var(--accent-glow);
+}
+
+/* ==================== CTA ==================== */
+.cta-section {
+  text-align: center;
+  padding: 8rem 4rem;
+}
+
+.cta-section .section-title {
+  max-width: 700px;
+  margin: 0 auto 1rem;
+}
+
+.cta-section .section-desc {
+  max-width: 500px;
+  margin: 0 auto 2.5rem;
+}
+
+/* ==================== FOOTER ==================== */
+footer {
+  padding: 2rem 4rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1400px;
+  margin: 0 auto;
+  font-size: 0.85rem;
+  color: var(--text-dim);
+}
+
+footer .social-links {
+  display: flex;
+  gap: 1.5rem;
+}
+
+/* ==================== ANIMATIONS ==================== */
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeSlideLeft {
+  from { opacity: 0; transform: translate(40px, -50%); }
+  to { opacity: 1; transform: translate(0, -50%); }
+}
+
+.fade-in {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.7s ease-out;
+}
+
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 1100px) {
+  .hero-terminal { display: none; }
+}
+
+@media (max-width: 768px) {
+  .hero, section { padding: 4rem 1.5rem; }
+  nav { padding: 1rem 1.5rem; }
+  nav .nav-links { display: none; }
+  .services-grid { grid-template-columns: 1fr; }
+  .projects-grid { grid-template-columns: 1fr; }
+  .hero-cta { flex-direction: column; }
+  footer { flex-direction: column; gap: 1rem; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">duc.dev</div>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#work">Work</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">
+    <span class="dot"></span>
+    Available for work
+  </div>
+
+  <h1>I build things<br>that <span class="accent">make money</span>.</h1>
+
+  <p class="hero-sub">
+    Full-stack developer specializing in web scraping, automation, AI integration, and high-converting landing pages. Fast delivery. Clean code. Real results.
+  </p>
+
+  <div class="hero-cta">
+    <a href="#contact" class="btn-primary">Hire me &rarr;</a>
+    <a href="#work" class="btn-secondary">See my work</a>
+  </div>
+
+  <!-- Floating terminal -->
+  <div class="hero-terminal">
+    <div class="terminal-bar">
+      <span class="terminal-dot r"></span>
+      <span class="terminal-dot y"></span>
+      <span class="terminal-dot g"></span>
+    </div>
+    <div class="terminal-body">
+      <div><span class="cmd">$</span> <span class="out">scrape --target "competitor-prices"</span></div>
+      <div><span class="dim">&#x2714; Extracted 12,847 records in 3.2s</span></div>
+      <div><span class="dim">&#x2714; Cleaned & exported to CSV</span></div>
+      <div>&nbsp;</div>
+      <div><span class="cmd">$</span> <span class="out">deploy --site "client-landing-page"</span></div>
+      <div><span class="dim">&#x2714; Built in 847ms</span></div>
+      <div><span class="dim">&#x2714; Lighthouse: 98/100</span></div>
+      <div>&nbsp;</div>
+      <div><span class="cmd">$</span> <span class="out">automate --flow "lead-gen-pipeline"</span></div>
+      <div><span class="dim">&#x2714; 3 triggers configured</span></div>
+      <div><span class="dim">&#x2714; Running... 47 leads captured today</span></div>
+      <div>&nbsp;</div>
+      <div><span class="cmd">$</span> <span class="terminal-cursor"></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services" class="fade-in">
+  <div class="section-label">// What I do</div>
+  <h2 class="section-title">Services</h2>
+  <p class="section-desc">I solve specific business problems with code. No fluff, no overhead — just working solutions delivered fast.</p>
+
+  <div class="services-grid">
+    <div class="service-card">
+      <div class="service-icon">&#x1F577;&#xFE0F;</div>
+      <h3>Web Scraping & Data Extraction</h3>
+      <p>Extract structured data from any website at scale. Price monitoring, lead generation, market research, competitor analysis. Anti-detection built-in.</p>
+      <div>
+        <span class="service-tag">Python</span>
+        <span class="service-tag">Playwright</span>
+        <span class="service-tag">Crawl4AI</span>
+        <span class="service-tag">APIs</span>
+      </div>
+      <span class="service-price">From $50 &bull; Delivered in 24-48h</span>
+    </div>
+
+    <div class="service-card">
+      <div class="service-icon">&#x26A1;</div>
+      <h3>Automation & Workflows</h3>
+      <p>Eliminate repetitive tasks. Email automation, data pipelines, report generation, CRM sync, scheduled jobs. Set it and forget it.</p>
+      <div>
+        <span class="service-tag">n8n</span>
+        <span class="service-tag">Node.js</span>
+        <span class="service-tag">Cron</span>
+        <span class="service-tag">APIs</span>
+      </div>
+      <span class="service-price">From $100 &bull; Ongoing retainers available</span>
+    </div>
+
+    <div class="service-card">
+      <div class="service-icon">&#x1F916;</div>
+      <h3>AI Integration & Chatbots</h3>
+      <p>Add AI to your product or business. Custom chatbots, document processing, AI-powered search, LLM integration, agent workflows.</p>
+      <div>
+        <span class="service-tag">Claude API</span>
+        <span class="service-tag">OpenAI</span>
+        <span class="service-tag">LangChain</span>
+        <span class="service-tag">MCP</span>
+      </div>
+      <span class="service-price">From $150 &bull; Custom quote for complex builds</span>
+    </div>
+
+    <div class="service-card">
+      <div class="service-icon">&#x1F3AF;</div>
+      <h3>Landing Pages & Web Apps</h3>
+      <p>High-converting landing pages and full web applications. Responsive, fast, SEO-optimized. From single pages to full-stack apps.</p>
+      <div>
+        <span class="service-tag">React</span>
+        <span class="service-tag">Next.js</span>
+        <span class="service-tag">Tailwind</span>
+        <span class="service-tag">TypeScript</span>
+      </div>
+      <span class="service-price">From $100 &bull; Revisions included</span>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="process" class="fade-in">
+  <div class="section-label">// How I work</div>
+  <h2 class="section-title">Simple process, fast results</h2>
+  <p class="section-desc">No bloated timelines. You describe the problem, I deliver the solution.</p>
+
+  <div class="process-steps">
+    <div class="process-step">
+      <h3>You describe</h3>
+      <p>Tell me what you need. A quick message is enough. I'll ask clarifying questions if needed.</p>
+    </div>
+    <div class="process-step">
+      <h3>I scope & quote</h3>
+      <p>Within hours, you get a clear scope, timeline, and fixed price. No surprises.</p>
+    </div>
+    <div class="process-step">
+      <h3>I build</h3>
+      <p>Fast iteration with updates along the way. Most projects delivered within 24-72 hours.</p>
+    </div>
+    <div class="process-step">
+      <h3>You profit</h3>
+      <p>Working solution, clean code, documentation included. Free revisions within scope.</p>
+    </div>
+  </div>
+</section>
+
+<!-- WORK / PROJECTS -->
+<section id="work" class="fade-in">
+  <div class="section-label">// Sample work</div>
+  <h2 class="section-title">What I've built</h2>
+  <p class="section-desc">A selection of projects showcasing what I deliver.</p>
+
+  <div class="projects-grid">
+    <div class="project-card">
+      <div class="project-preview">
+        <div class="code-preview">
+<span class="cm"># Facebook Monitor — 7-Layer Anti-Detection</span>
+<span class="kw">class</span> <span class="fn">FacebookScraper</span>:
+    anti_detection = [
+        <span class="str">"browser_fingerprint"</span>,
+        <span class="str">"pareto_timing"</span>,
+        <span class="str">"human_simulation"</span>,
+        <span class="str">"proxy_rotation"</span>,
+        <span class="str">"session_quarantine"</span>,
+        <span class="str">"circuit_breaker"</span>,
+        <span class="str">"hot_reload_config"</span>,
+    ]
+
+    <span class="kw">async def</span> <span class="fn">collect</span>(self, targets):
+        <span class="kw">async with</span> <span class="fn">StealthBrowser</span>() <span class="kw">as</span> b:
+            <span class="kw">for</span> target <span class="kw">in</span> targets:
+                data = <span class="kw">await</span> b.<span class="fn">scrape</span>(target)
+                <span class="kw">await</span> self.db.<span class="fn">store</span>(data)
+                <span class="kw">await</span> self.ws.<span class="fn">broadcast</span>(data)
+        </div>
+      </div>
+      <div class="project-info">
+        <h3><a href="https://github.com/minhduc280903/facebook_monitor" target="_blank">Facebook Monitor System</a></h3>
+        <p>Production-grade Facebook scraping with 7-layer anti-detection, real-time WebSocket analytics, Streamlit dashboard, and dual-stream data pipelines. Circuit breaker + auto-quarantine for resilience.</p>
+        <div class="project-tags">
+          <span class="service-tag">Python</span>
+          <span class="service-tag">Playwright</span>
+          <span class="service-tag">FastAPI</span>
+          <span class="service-tag">PostgreSQL</span>
+          <span class="service-tag">Redis</span>
+          <span class="service-tag">Celery</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-preview">
+        <div class="code-preview">
+<span class="cm"># GraphRAG Hybrid Chatbot — Messenger + Zalo</span>
+<span class="kw">class</span> <span class="fn">SmartChatbot</span>:
+    features = {
+        <span class="str">"multimodal"</span>: <span class="str">"text, image, audio"</span>,
+        <span class="str">"personalization"</span>: <span class="str">"calls customer by name"</span>,
+        <span class="str">"auto_images"</span>: <span class="str">"products, quotes, certs"</span>,
+        <span class="str">"admin_handoff"</span>: <span class="str">"pauses 30min on admin chat"</span>,
+        <span class="str">"follow_up_24h"</span>: <span class="str">"automated lead nurturing"</span>,
+        <span class="str">"debouncing"</span>: <span class="str">"waits for full message"</span>,
+        <span class="str">"human_like"</span>: <span class="str">"splits &amp; types naturally"</span>,
+        <span class="str">"graph_rag"</span>: <span class="str">"Neo4j knowledge graph"</span>,
+    }
+    stack = [<span class="str">"n8n"</span>, <span class="str">"Gemini"</span>, <span class="str">"Neo4j"</span>, <span class="str">"Redis"</span>]
+        </div>
+      </div>
+      <div class="project-info">
+        <h3><a href="https://github.com/minhduc280903/vu-minh-duc-graphrag-chatbot" target="_blank">GraphRAG AI Chatbot</a></h3>
+        <p>Hybrid AI chatbot for Facebook Messenger &amp; Zalo. Multimodal input, GraphRAG knowledge base (Neo4j), human-like typing, 24h follow-up, admin handoff. Handles sales conversations autonomously.</p>
+        <div class="project-tags">
+          <span class="service-tag">n8n</span>
+          <span class="service-tag">Gemini</span>
+          <span class="service-tag">Neo4j</span>
+          <span class="service-tag">FastAPI</span>
+          <span class="service-tag">Redis</span>
+          <span class="service-tag">Docker</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-preview">
+        <div class="code-preview">
+<span class="cm">// MindLift — AI Emotional Fitness</span>
+<span class="kw">const</span> <span class="fn">MindLift</span> = () => {
+  <span class="kw">const</span> [session, setSession] = <span class="fn">useState</span>(<span class="kw">null</span>);
+  <span class="kw">const</span> ai = <span class="fn">useAICoach</span>({
+    model: <span class="str">"claude-sonnet"</span>,
+    persona: <span class="str">"empathetic fitness coach"</span>,
+  });
+
+  <span class="kw">const</span> <span class="fn">startExercise</span> = <span class="kw">async</span> () => {
+    <span class="kw">const</span> plan = <span class="kw">await</span> ai.<span class="fn">generatePlan</span>({
+      duration: <span class="str">"5min"</span>,
+      mood: session.currentMood,
+      history: session.pastExercises,
+    });
+    setSession({ ...session, plan });
+  };
+
+  <span class="kw">return</span> &lt;<span class="fn">ExerciseView</span> /&gt;;
+};
+        </div>
+      </div>
+      <div class="project-info">
+        <h3><a href="https://github.com/minhduc280903/emotional-gym-ai" target="_blank">MindLift — AI Emotional Fitness</a></h3>
+        <p>AI-powered app for daily 5-minute emotional fitness exercises. Personalized routines, mood tracking, progress analytics. Built with TypeScript and AI coaching engine.</p>
+        <div class="project-tags">
+          <span class="service-tag">TypeScript</span>
+          <span class="service-tag">React</span>
+          <span class="service-tag">AI API</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TECH STACK -->
+<section class="fade-in">
+  <div class="section-label">// Tech stack</div>
+  <h2 class="section-title">Tools I work with</h2>
+  <p class="section-desc">The right tool for the right job. I pick what gets you results fastest.</p>
+
+  <div class="stack-grid">
+    <div class="stack-item">Python</div>
+    <div class="stack-item">TypeScript</div>
+    <div class="stack-item">FastAPI</div>
+    <div class="stack-item">React / Next.js</div>
+    <div class="stack-item">Node.js</div>
+    <div class="stack-item">Playwright</div>
+    <div class="stack-item">PostgreSQL</div>
+    <div class="stack-item">Redis</div>
+    <div class="stack-item">Neo4j</div>
+    <div class="stack-item">n8n</div>
+    <div class="stack-item">Celery</div>
+    <div class="stack-item">Docker</div>
+    <div class="stack-item">Claude / OpenAI API</div>
+    <div class="stack-item">LangChain</div>
+    <div class="stack-item">Streamlit</div>
+    <div class="stack-item">Tailwind CSS</div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="contact" class="cta-section fade-in">
+  <div class="section-label">// Let's work together</div>
+  <h2 class="section-title">Got a problem?<br>I'll build the solution.</h2>
+  <p class="section-desc">Describe what you need. I'll get back to you within a few hours with a scope and quote.</p>
+
+  <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+    <a href="mailto:mrduc2266@gmail.com" class="btn-primary">&#x2709; Email me</a>
+    <a href="https://github.com/minhduc280903" class="btn-secondary" target="_blank">GitHub</a>
+  </div>
+
+  <p style="margin-top: 2rem; color: var(--text-dim); font-size: 0.85rem;">
+    Response time: usually under 2 hours &bull; Timezone: UTC+7
+  </p>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="mono" style="font-size: 0.8rem;">&#169; 2026 duc.dev</span>
+  <div class="social-links">
+    <a href="https://github.com/minhduc280903" target="_blank">GitHub</a>
+    <a href="mailto:mrduc2266@gmail.com">Email</a>
+  </div>
+</footer>
+
+<!-- SCROLL ANIMATIONS -->
+<script>
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// Smooth nav highlight
+document.querySelectorAll('nav a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function(e) {
+    e.preventDefault();
+    document.querySelector(this.getAttribute('href')).scrollIntoView({
+      behavior: 'smooth'
+    });
+  });
+});
+</script>
+
+</body>
+</html>
